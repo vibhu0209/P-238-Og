@@ -1,3 +1,4 @@
+# Import necessary modules and functions from Flask and other Python libraries
 from flask.cli import FlaskGroup
 from app import create_app, db
 from flask import current_app
@@ -15,8 +16,10 @@ from app.models.editor.company_products import CompanyProducts
 from app.models.editor.company_orders import CompanyOrders
 from app.models.editor.order_item import OrderItems
 
+# Create a FlaskGroup instance with the create_app function for managing Flask commands
 cli = FlaskGroup(create_app=create_app)
 
+# Define a list of user data in JSON format
 user_json = [
 	{
 		"name": "John Doe",
@@ -110,6 +113,7 @@ user_json = [
 	}
 ]
 
+# Define a list of product data in JSON format
 product_json = [
 	{
 		"name": "Sergeant Rodog AI",
@@ -189,16 +193,19 @@ product_json = [
 		"selling_price": "9.49"
 	}
 ]
-
+# Define a function to drop and recreate the database
 def recreate_db():
 	db.drop_all()
 	db.create_all()
 	db.session.commit()
 
+# Define a function to seed the database with user and product data
 def seeder():
+	 # Seed user data
 	for user in user_json:
 		Users.create(user.get("name"), user.get("email"), user.get("password"), user.get("contact"))
-
+	
+  	# Seed product data
 	for product in product_json:
 		Products.create(product.get("name"), product.get("image"), product.get("rating"), product.get("marked_price"), product.get("selling_price"))
 
@@ -242,9 +249,12 @@ def seeder():
 				OrderItems.create(int(row[0]), int(row[1]), int(row[1]), float(row[1]), int(row[1]))
 			except:
 				pass
-
+# Define a CLI command "rsd" (recreate and seed the database)
 @cli.command()
 def rsd():
+    # Check if the application environment is allowed for seeding the database
+    # This part is currently commented 
+
 	# if current_app.config.get('ENV') not in ('development', 'test', 'testing'):
 	#   print("ERROR: seed-db only allowed in development and testing env.")
 	#   return
